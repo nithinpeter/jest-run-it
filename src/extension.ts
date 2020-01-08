@@ -55,11 +55,11 @@ class JestifyedCodeLensProvider implements vscode.CodeLensProvider {
 
     let runCodeLens = new vscode.CodeLens(
       commentLine,
-      MyCodeLensProvider.runCommand
+      JestifyedCodeLensProvider.runCommand
     );
     let debugCodeLens = new vscode.CodeLens(
       commentLine,
-      MyCodeLensProvider.debugCommand
+      JestifyedCodeLensProvider.debugCommand
     );
 
     return [runCodeLens, debugCodeLens];
