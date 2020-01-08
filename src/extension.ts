@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { parse } from 'jest-editor-support';
 
 async function addConsoleLog() {
   let lineNumStr = await vscode.window.showInputBox({
@@ -21,13 +22,12 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(commandDisposable);
 
-  let docSelector = {
-    language: 'javascript',
-    scheme: 'file',
-  };
-
   let codeLensProviderDisposable = vscode.languages.registerCodeLensProvider(
-    docSelector,
+    {
+      // pattern: '**/*.tsx',
+      language: 'javascript',
+      scheme: 'file',
+    },
     new MyCodeLensProvider()
   );
 
@@ -38,6 +38,10 @@ class MyCodeLensProvider implements vscode.CodeLensProvider {
   async provideCodeLenses(
     document: vscode.TextDocument
   ): Promise<vscode.CodeLens[]> {
+		debugger;
+    // const p = document.getText();
+    // const parsed = parse(p);
+
     let topOfDocument = new vscode.Range(0, 0, 0, 0);
 
     let c: vscode.Command = {
