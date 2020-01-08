@@ -24,34 +24,64 @@ export function activate(context: vscode.ExtensionContext) {
 
   let codeLensProviderDisposable = vscode.languages.registerCodeLensProvider(
     {
-      // pattern: '**/*.tsx',
-      language: 'javascript',
+      pattern: '**/*.test.{js,jsx,ts,tsx}',
       scheme: 'file',
     },
-    new MyCodeLensProvider()
+    new JestifyedCodeLensProvider()
   );
 
   context.subscriptions.push(codeLensProviderDisposable);
 }
 
-class MyCodeLensProvider implements vscode.CodeLensProvider {
+class JestifyedCodeLensProvider implements vscode.CodeLensProvider {
+  private static runCommand: vscode.Command = {
+    command: 'extension.addConsoleLog',
+    title: 'Run test',
+  };
+
+  private static debugCommand: vscode.Command = {
+    command: 'extension.addConsoleLog',
+    title: 'Debug test',
+  };
+
+  private createLensAt(startLine: number, startCol: number) {
+    // Range values are 0 based.
+    let commentLine = new vscode.Range(
+      startLine - 1,
+      startCol - 1,
+      startLine - 1,
+      startCol - 1
+    );
+
+    let runCodeLens = new vscode.CodeLens(
+      commentLine,
+      MyCodeLensProvider.runCommand
+    );
+    let debugCodeLens = new vscode.CodeLens(
+      commentLine,
+      MyCodeLensProvider.debugCommand
+    );
+
+    return [runCodeLens, debugCodeLens];
+  }
   async provideCodeLenses(
     document: vscode.TextDocument
   ): Promise<vscode.CodeLens[]> {
-		debugger;
-    // const p = document.getText();
-    // const parsed = parse(p);
-
-    let topOfDocument = new vscode.Range(0, 0, 0, 0);
-
-    let c: vscode.Command = {
-      command: 'extension.addConsoleLog',
-      title: 'Insert console.log',
-    };
-
-    let codeLens = new vscode.CodeLens(topOfDocument, c);
-
-    return [codeLens];
+    const codeLenses: vscode.CodeLens[] = [];
+    try {
+      const filePath = document.uri.fsPath;
+      const parsed = parse(filePath);
+      if (Array.isArray(parsed.itBlocks)) {
+        parsed.itBlocks.forEach(itb => {
+          const news = this.createLensAt(itb.start.line, itb.start.column);
+          codeLenses.push(...news);
+        }, []);
+      }
+    } catch (e) {
+      // Do nothing now
+      console.log(e);
+    }
+    return codeLenses;
   }
 }
 
