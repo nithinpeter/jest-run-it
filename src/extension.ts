@@ -1,9 +1,29 @@
 import * as vscode from 'vscode';
 import { parse } from 'jest-editor-support';
 
-type JestifydeConfig = {
-  jestPath: string;
-  jestConfig: string;
+enum ConfigOption {
+  JestPath = 'jestPath',
+  JestConfigPath = 'jestConfigPath',
+  RunTestLabel = 'runTestLabel',
+  DebugTestLabel = 'debugTestLabel',
+  TestMatchPatterns = 'testMatchPatterns',
+}
+
+type JestifydeConfig = Omit<
+  {
+    [key in ConfigOption]: string;
+  },
+  ConfigOption.TestMatchPatterns
+> & {
+  [ConfigOption.TestMatchPatterns]: Array<string>;
+};
+
+const getConfig = (option: ConfigOption) => {
+  const config = vscode.workspace
+    .getConfiguration()
+    .get<JestifydeConfig>('jestifyde');
+
+  return config ? config[option] : '';
 };
 
 const DEFAULT_JEST_PATH = 'node_modules/.bin/jest';
@@ -14,24 +34,19 @@ const quoteTestName = (testName: string) => {
   return `'${escaped}'`;
 };
 
-const buildCommand = (filePath: string, testName: string) => {
-  const config = vscode.workspace
-    .getConfiguration()
-    .get<JestifydeConfig>('jestifyde');
-
-  const command = `${(config && config.jestPath) ||
-    DEFAULT_JEST_PATH} ${filePath} -t ${quoteTestName(testName)}`;
-
-  return command;
-};
-
 const getTerminal = (terminalName: string) => {
   return vscode.window.terminals.find(t => t.name === terminalName);
 };
 
 const runTest = (filePath: string, testName: string) => {
   const TERMINAL_NAME = 'Jestifyde';
-  const command = buildCommand(filePath, testName);
+  const jestPath = getConfig(ConfigOption.JestPath) || DEFAULT_JEST_PATH;
+  const jestConfigPath = getConfig(ConfigOption.JestConfigPath);
+
+  let command = `${jestPath} ${filePath} -t ${quoteTestName(testName)}`;
+  if (jestConfigPath) {
+    command += `-c ${jestConfigPath}`;
+  }
 
   let terminal = getTerminal(TERMINAL_NAME);
   if (!terminal) {
@@ -43,13 +58,13 @@ const runTest = (filePath: string, testName: string) => {
 
 const debugTest = (filePath: string, testName: string) => {
   const editor = vscode.window.activeTextEditor;
+  const jestPath = getConfig(ConfigOption.JestPath) || DEFAULT_JEST_PATH;
+  const jestConfigPath = getConfig(ConfigOption.JestConfigPath);
 
-  const config = vscode.workspace
-    .getConfiguration()
-    .get<JestifydeConfig>('jestifyde');
-
-  const jestPath = (config && config.jestPath) || DEFAULT_JEST_PATH;
   const args = [filePath, '-t', quoteTestName(testName), '--runInBand'];
+  if (jestConfigPath) {
+    args.push('-c', jestConfigPath as string);
+  }
 
   const debugConfig: vscode.DebugConfiguration = {
     console: 'integratedTerminal',
@@ -80,28 +95,56 @@ export const activate = (context: vscode.ExtensionContext) => {
   );
   context.subscriptions.push(debugTestCommand);
 
-  const codeLensProviderDisposable = vscode.languages.registerCodeLensProvider(
-    {
-      pattern: '**/*.test.{js,jsx,ts,tsx}',
+  let patterns = [];
+  const testMatchPatternsConfig = getConfig(
+    ConfigOption.TestMatchPatterns
+  ) as Array<string>;
+  if (Array.isArray(testMatchPatternsConfig)) {
+    patterns = testMatchPatternsConfig.map(tm => ({
+      pattern: tm,
       scheme: 'file',
-    },
+    }));
+  } else {
+    // Default patterns
+    patterns = [
+      {
+        pattern: '**/*.{test,spec}.{js,jsx,ts,tsx}',
+        scheme: 'file',
+      },
+      {
+        pattern: '**/__tests__/*.{js,jsx,ts,tsx}',
+        scheme: 'file',
+      },
+    ];
+  }
+
+  const codeLensProviderDisposable = vscode.languages.registerCodeLensProvider(
+    patterns,
     new JestifyedCodeLensProvider()
   );
   context.subscriptions.push(codeLensProviderDisposable);
 };
 
 class JestifyedCodeLensProvider implements vscode.CodeLensProvider {
-  private runCommand = (args: [string, string]): vscode.Command => ({
-    command: 'jestifyde.runTest',
-    title: 'Run test',
-    arguments: args,
-  });
+  private runCommand = (args: [string, string]): vscode.Command => {
+    const runLabel = getConfig(ConfigOption.RunTestLabel) as string;
+    return {
+      command: 'jestifyde.runTest',
+      title: runLabel ? runLabel : '🏃',
+      arguments: args,
+      tooltip: 'Run test',
+    };
+  };
 
-  private debugCommand = (args: [string, string]): vscode.Command => ({
-    command: 'jestifyde.debugTest',
-    title: 'Debug test',
-    arguments: args,
-  });
+  private debugCommand = (args: [string, string]): vscode.Command => {
+    const debugLabel = getConfig(ConfigOption.DebugTestLabel) as string;
+    return {
+      command: 'jestifyde.debugTest',
+      title: debugLabel ? debugLabel : '🐛',
+      arguments: args,
+      tooltip: 'Debug test',
+    };
+  };
 
   private createLensAt(
     startLine: number,
@@ -124,6 +167,7 @@ class JestifyedCodeLensProvider implements vscode.CodeLensProvider {
 
     return [runCodeLens, debugCodeLens];
   }
+
   async provideCodeLenses(
     document: vscode.TextDocument
   ): Promise<vscode.CodeLens[]> {

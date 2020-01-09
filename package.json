@@ -18,7 +18,7 @@
       {
         "title": "Jestifyde Config",
         "properties": {
-          "jestifyde.configPath": {
+          "jestifyde.jestConfigPath": {
             "type": "string",
             "default": "",
             "description": "Jest config path (relative to ${workFolder} e.g. jest-config.json)",
@@ -28,6 +28,27 @@
             "type": "string",
             "default": "",
             "description": "Absolute path to jest bin file (e.g. /usr/lib/node_modules/jest/bin/jest.js)",
+            "scope": "window"
+          },
+          "jestifyde.runTestLabel": {
+            "type": "string",
+            "default": "🏃‍♂️",
+            "description": "Label for the run test action",
+            "scope": "window"
+          },
+          "jestifyde.debugTestLabel": {
+            "type": "string",
+            "default": "🐞",
+            "description": "Label for the debug test action",
+            "scope": "window"
+          },
+          "jestifyde.testMatchPatterns": {
+            "type": "array",
+            "default": [
+              "**/*.{spec,test}.{js,ts,jsx,tsx}",
+              "**/__test__/*.{js,ts,jsx,tsx}"
+            ],
+            "description": "Glob patterns to match test files",
             "scope": "window"
           }
         }
