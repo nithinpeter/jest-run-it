@@ -45,7 +45,7 @@ const runTest = (filePath: string, testName: string) => {
 
   let command = `${jestPath} ${filePath} -t ${quoteTestName(testName)}`;
   if (jestConfigPath) {
-    command += `-c ${jestConfigPath}`;
+    command += ` -c ${jestConfigPath}`;
   }
 
   let terminal = getTerminal(TERMINAL_NAME);
