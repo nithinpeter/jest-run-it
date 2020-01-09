@@ -14,10 +14,33 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "configuration": [
+      {
+        "title": "Jestifyde Config",
+        "properties": {
+          "jestfiyde.configPath": {
+            "type": "string",
+            "default": "",
+            "description": "Jest config path (relative to ${workFolder} e.g. jest-config.json)",
+            "scope": "window"
+          },
+          "jestfiyde.jestPath": {
+            "type": "string",
+            "default": "",
+            "description": "Absolute path to jest bin file (e.g. /usr/lib/node_modules/jest/bin/jest.js)",
+            "scope": "window"
+          }
+        }
+      }
+    ],
     "commands": [
       {
-        "command": "extension.addConsoleLog",
-        "title": "Add Console Log"
+        "command": "jestifyde.debugTest",
+        "title": "Debug test"
+      },
+      {
+        "command": "jestifyde.runTest",
+        "title": "Run test"
       }
     ]
   },

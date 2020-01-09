@@ -1,50 +1,105 @@
 import * as vscode from 'vscode';
 import { parse } from 'jest-editor-support';
 
-async function addConsoleLog() {
-  let lineNumStr = await vscode.window.showInputBox({
-    prompt: 'Line Number',
-  });
+type JestifydeConfig = {
+  jestPath: string;
+  jestConfig: string;
+};
 
-  let lineNum = +(lineNumStr || 0);
+const DEFAULT_JEST_PATH = 'node_modules/.bin/jest';
 
-  let insertionLocation = new vscode.Range(lineNum - 1, 0, lineNum - 1, 0);
-  let snippet = new vscode.SnippetString('console.log($1);\n');
+const quoteTestName = (testName: string) => {
+  // escape double quotes
+  const escaped = testName.replace(/'/g, "\\'");
+  return `'${escaped}'`;
+};
 
-  vscode.window.activeTextEditor!.insertSnippet(snippet, insertionLocation);
-}
+const buildCommand = (filePath: string, testName: string) => {
+  const config = vscode.workspace
+    .getConfiguration()
+    .get<JestifydeConfig>('jestifyde');
 
-export function activate(context: vscode.ExtensionContext) {
-  let commandDisposable = vscode.commands.registerCommand(
-    'extension.addConsoleLog',
-    addConsoleLog
+  const command = `${(config && config.jestPath) ||
+    DEFAULT_JEST_PATH} ${filePath} -t ${quoteTestName(testName)}`;
+
+  return command;
+};
+
+const runTest = (filePath: string, testName: string) => {
+  const command = buildCommand(filePath, testName);
+
+  const terminal = vscode.window.createTerminal(`Run ${filePath}:${testName}`);
+  terminal.show();
+  terminal.sendText(command);
+};
+
+const debugTest = (filePath: string, testName: string) => {
+  const editor = vscode.window.activeTextEditor;
+
+  const config = vscode.workspace
+    .getConfiguration()
+    .get<JestifydeConfig>('jestifyde');
+
+  const jestPath = (config && config.jestPath) || DEFAULT_JEST_PATH;
+  const args = [filePath, `-t ${quoteTestName(testName)}`, `--runInBand`];
+
+  const debugConfig: vscode.DebugConfiguration = {
+    console: 'integratedTerminal',
+    internalConsoleOptions: 'neverOpen',
+    name: 'Jestifyde',
+    program: '${workspaceFolder}/' + jestPath,
+    request: 'launch',
+    type: 'node',
+    args,
+  };
+
+  vscode.debug.startDebugging(
+    vscode.workspace.getWorkspaceFolder(editor!.document.uri),
+    debugConfig
   );
+};
 
-  context.subscriptions.push(commandDisposable);
+export const activate = (context: vscode.ExtensionContext) => {
+  const runTestCommand = vscode.commands.registerCommand(
+    'jestifyde.runTest',
+    runTest
+  );
+  context.subscriptions.push(runTestCommand);
 
-  let codeLensProviderDisposable = vscode.languages.registerCodeLensProvider(
+  const debugTestCommand = vscode.commands.registerCommand(
+    'jestifyde.debugTest',
+    debugTest
+  );
+  context.subscriptions.push(debugTestCommand);
+
+  const codeLensProviderDisposable = vscode.languages.registerCodeLensProvider(
     {
       pattern: '**/*.test.{js,jsx,ts,tsx}',
       scheme: 'file',
     },
     new JestifyedCodeLensProvider()
   );
-
   context.subscriptions.push(codeLensProviderDisposable);
-}
+};
 
 class JestifyedCodeLensProvider implements vscode.CodeLensProvider {
-  private static runCommand: vscode.Command = {
-    command: 'extension.addConsoleLog',
+  private runCommand = (args: [string, string]): vscode.Command => ({
+    command: 'jestifyde.runTest',
     title: 'Run test',
-  };
+    arguments: args,
+  });
 
-  private static debugCommand: vscode.Command = {
-    command: 'extension.addConsoleLog',
+  private debugCommand = (args: [string, string]): vscode.Command => ({
+    command: 'jestifyde.debugTest',
     title: 'Debug test',
-  };
+    arguments: args,
+  });
 
-  private createLensAt(startLine: number, startCol: number) {
+  private createLensAt(
+    startLine: number,
+    startCol: number,
+    args: [string, string]
+  ) {
     // Range values are 0 based.
     let commentLine = new vscode.Range(
       startLine - 1,
@@ -53,13 +108,10 @@ class JestifyedCodeLensProvider implements vscode.CodeLensProvider {
       startCol - 1
     );
 
-    let runCodeLens = new vscode.CodeLens(
-      commentLine,
-      JestifyedCodeLensProvider.runCommand
-    );
+    let runCodeLens = new vscode.CodeLens(commentLine, this.runCommand(args));
     let debugCodeLens = new vscode.CodeLens(
       commentLine,
-      JestifyedCodeLensProvider.debugCommand
+      this.debugCommand(args)
     );
 
     return [runCodeLens, debugCodeLens];
@@ -73,8 +125,11 @@ class JestifyedCodeLensProvider implements vscode.CodeLensProvider {
       const parsed = parse(filePath);
       if (Array.isArray(parsed.itBlocks)) {
         parsed.itBlocks.forEach(itb => {
-          const news = this.createLensAt(itb.start.line, itb.start.column);
-          codeLenses.push(...news);
+          const lenses = this.createLensAt(itb.start.line, itb.start.column, [
+            itb.file,
+            itb.name,
+          ]);
+          codeLenses.push(...lenses);
         }, []);
       }
     } catch (e) {
