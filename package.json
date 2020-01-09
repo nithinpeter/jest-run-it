@@ -18,13 +18,13 @@
       {
         "title": "Jestifyde Config",
         "properties": {
-          "jestfiyde.configPath": {
+          "jestifyde.configPath": {
             "type": "string",
             "default": "",
             "description": "Jest config path (relative to ${workFolder} e.g. jest-config.json)",
             "scope": "window"
           },
-          "jestfiyde.jestPath": {
+          "jestifyde.jestPath": {
             "type": "string",
             "default": "",
             "description": "Absolute path to jest bin file (e.g. /usr/lib/node_modules/jest/bin/jest.js)",

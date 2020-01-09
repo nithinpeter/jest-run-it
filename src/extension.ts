@@ -25,10 +25,18 @@ const buildCommand = (filePath: string, testName: string) => {
   return command;
 };
 
+const getTerminal = (terminalName: string) => {
+  return vscode.window.terminals.find(t => t.name === terminalName);
+};
+
 const runTest = (filePath: string, testName: string) => {
+  const TERMINAL_NAME = 'Jestifyde';
   const command = buildCommand(filePath, testName);
 
-  const terminal = vscode.window.createTerminal(`Run ${filePath}:${testName}`);
+  let terminal = getTerminal(TERMINAL_NAME);
+  if (!terminal) {
+    terminal = vscode.window.createTerminal(TERMINAL_NAME);
+  }
   terminal.show();
   terminal.sendText(command);
 };
@@ -41,7 +49,7 @@ const debugTest = (filePath: string, testName: string) => {
     .get<JestifydeConfig>('jestifyde');
 
   const jestPath = (config && config.jestPath) || DEFAULT_JEST_PATH;
-  const args = [filePath, `-t ${quoteTestName(testName)}`, `--runInBand`];
+  const args = [filePath, '-t', quoteTestName(testName), '--runInBand'];
 
   const debugConfig: vscode.DebugConfiguration = {
     console: 'integratedTerminal',
