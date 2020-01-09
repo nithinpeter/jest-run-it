@@ -131,6 +131,17 @@ class JestifyedCodeLensProvider implements vscode.CodeLensProvider {
     try {
       const filePath = document.uri.fsPath;
       const parsed = parse(filePath);
+
+      if (Array.isArray(parsed.describeBlocks)) {
+        parsed.describeBlocks.forEach(des => {
+          const lenses = this.createLensAt(des.start.line, des.start.column, [
+            des.file,
+            des.name,
+          ]);
+          codeLenses.push(...lenses);
+        });
+      }
+
       if (Array.isArray(parsed.itBlocks)) {
         parsed.itBlocks.forEach(itb => {
           const lenses = this.createLensAt(itb.start.line, itb.start.column, [
@@ -138,7 +149,7 @@ class JestifyedCodeLensProvider implements vscode.CodeLensProvider {
             itb.name,
           ]);
           codeLenses.push(...lenses);
-        }, []);
+        });
       }
     } catch (e) {
       // Do nothing now
