@@ -21,13 +21,13 @@
           "jestifyde.jestConfigPath": {
             "type": "string",
             "default": "",
-            "description": "Jest config path (relative to ${workFolder} e.g. jest-config.json)",
+            "description": "Jest config file path relative to the current workspace (e.g: ./jest.config.js)",
             "scope": "window"
           },
           "jestifyde.jestPath": {
             "type": "string",
-            "default": "",
-            "description": "Absolute path to jest bin file (e.g. /usr/lib/node_modules/jest/bin/jest.js)",
+            "default": "node_modules/.bin/jest",
+            "description": "Absolute path to the Jest binary (default: node_modules/.bin/jest)",
             "scope": "window"
           },
           "jestifyde.runTestLabel": {

@@ -130,7 +130,7 @@ class JestifyedCodeLensProvider implements vscode.CodeLensProvider {
     const runLabel = getConfig(ConfigOption.RunTestLabel) as string;
     return {
       command: 'jestifyde.runTest',
-      title: runLabel ? runLabel : '🏃',
+      title: runLabel ? runLabel : '🏃‍♂️',
       arguments: args,
       tooltip: 'Run test',
     };
@@ -140,7 +140,7 @@ class JestifyedCodeLensProvider implements vscode.CodeLensProvider {
     const debugLabel = getConfig(ConfigOption.DebugTestLabel) as string;
     return {
       command: 'jestifyde.debugTest',
-      title: debugLabel ? debugLabel : '🐛',
+      title: debugLabel ? debugLabel : '🐞',
       arguments: args,
       tooltip: 'Debug test',
     };
