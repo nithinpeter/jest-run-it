@@ -62,7 +62,7 @@ const debugTest = (filePath: string, testName: string) => {
 export const activate = (context: vscode.ExtensionContext) => {
   const testsExplorerDataProvider = new TestsExplorerDataProvider();
   vscode.window.registerTreeDataProvider(
-    'jestRunItExplorer',
+    'jestRunItTestsExplorer',
     testsExplorerDataProvider
   );
 

@@ -45,21 +45,21 @@ export class TestsExplorerDataProvider implements vscode.TreeDataProvider<Testab
           ? testMatchPatternsConfig
           : DEFAULT_TEST_FILE_PATTERNS;
 
-        const jestRunItExplorerEnabled = micromatch.isMatch(filePath, patterns);
+        const jestRunItTestsExplorerEnabled = micromatch.isMatch(filePath, patterns);
 
         vscode.commands.executeCommand(
           'setContext',
-          'jestRunItExplorerEnabled',
-          jestRunItExplorerEnabled
+          'jestRunItTestsExplorerEnabled',
+          jestRunItTestsExplorerEnabled
         );
-        if (jestRunItExplorerEnabled) {
+        if (jestRunItTestsExplorerEnabled) {
           this.refresh();
         }
       }
     } else {
       vscode.commands.executeCommand(
         'setContext',
-        'jestRunItExplorerEnabled',
+        'jestRunItTestsExplorerEnabled',
         false
       );
     }

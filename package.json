@@ -57,11 +57,19 @@
     "commands": [
       {
         "command": "jestRunIt.debugTest",
-        "title": "Debug test"
+        "title": "Debug test",
+        "icon": {
+          "light": "resources/icons/debug/light.svg",
+          "dark": "resources/icons/debug/dark.svg"
+        }
       },
       {
         "command": "jestRunIt.runTest",
-        "title": "Run test"
+        "title": "Run test",
+        "icon": {
+          "light": "resources/icons/run/light.svg",
+          "dark": "resources/icons/run/dark.svg"
+        }
       }
     ],
     "viewsContainers": {
@@ -69,16 +77,30 @@
         {
           "id": "jestRunIt",
           "title": "Jest Run It",
-          "icon": "media/jest-logo.png"
+          "icon": "resources/jest-logo.png"
         }
       ]
     },
     "views": {
       "jestRunIt": [
         {
-          "id": "jestRunItExplorer",
+          "id": "jestRunItTestsExplorer",
           "name": "Explorer",
-          "when": "jestRunItExplorerEnabled"
+          "when": "jestRunItTestsExplorerEnabled"
+        }
+      ]
+    },
+    "menus": {
+      "view/item/context": [
+        {
+          "command": "jestRunIt.runTest",
+          "when": "view == jestRunItTestsExplorer",
+          "group": "inline"
+        },
+        {
+          "command": "jestRunIt.debugTest",
+          "when": "view == jestRunItTestsExplorer",
+          "group": "inline"
         }
       ]
     }
