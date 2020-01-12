@@ -63,7 +63,24 @@
         "command": "jestRunIt.runTest",
         "title": "Run test"
       }
-    ]
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "jestRunIt",
+          "title": "Jest Run It",
+          "icon": "media/dep.svg"
+        }
+      ]
+    },
+    "views": {
+      "jestRunIt": [
+        {
+          "id": "jestRunItExplorer",
+          "name": "Jest Run It Explorer"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

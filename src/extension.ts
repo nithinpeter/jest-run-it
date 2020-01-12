@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { parse } from 'jest-editor-support';
+import { ExplorerDataProvider } from './explorerDataProvider';
 
 enum ConfigOption {
   JestPath = 'jestPath',
@@ -83,6 +84,12 @@ const debugTest = (filePath: string, testName: string) => {
 };
 
 export const activate = (context: vscode.ExtensionContext) => {
+  const explorerDataProvider = new ExplorerDataProvider();
+  vscode.window.registerTreeDataProvider(
+    'jestRunItExplorer',
+    explorerDataProvider
+  );
+
   const runTestCommand = vscode.commands.registerCommand(
     'jestRunIt.runTest',
     runTest
