@@ -4,3 +4,5 @@ export const DEFAULT_TEST_FILE_PATTERNS = [
 ];
 
 export const DEFAULT_JEST_PATH = 'node_modules/.bin/jest';
+
+export const TERMINAL_NAME = 'JestRunIt';

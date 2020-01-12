@@ -1,8 +1,15 @@
 import * as vscode from 'vscode';
 import { parse } from 'jest-editor-support';
 
-import { TestsExplorerDataProvider } from './testsExplorerDataProvider';
-import { DEFAULT_TEST_FILE_PATTERNS, DEFAULT_JEST_PATH } from './constants';
+import {
+  TestsExplorerDataProvider,
+  Testable,
+} from './testsExplorerDataProvider';
+import {
+  DEFAULT_TEST_FILE_PATTERNS,
+  DEFAULT_JEST_PATH,
+  TERMINAL_NAME,
+} from './constants';
 import { getConfig, ConfigOption } from './config';
 
 const quoteTestName = (testName: string) => {
@@ -15,8 +22,15 @@ const getTerminal = (terminalName: string) => {
   return vscode.window.terminals.find(t => t.name === terminalName);
 };
 
+const runTestFromExplorer = (testable: Testable) => {
+  runTest(testable.file, testable.label);
+};
+
+const debugTestFromExplorer = (testable: Testable) => {
+  debugTest(testable.file, testable.label);
+};
+
 const runTest = (filePath: string, testName: string) => {
-  const TERMINAL_NAME = 'JestRunIt';
   const jestPath = getConfig(ConfigOption.JestPath) || DEFAULT_JEST_PATH;
   const jestConfigPath = getConfig(ConfigOption.JestConfigPath);
 
@@ -67,16 +81,28 @@ export const activate = (context: vscode.ExtensionContext) => {
   );
 
   const runTestCommand = vscode.commands.registerCommand(
-    'jestRunIt.runTest',
+    'jestRunItCodeLens.runTest',
     runTest
   );
   context.subscriptions.push(runTestCommand);
 
   const debugTestCommand = vscode.commands.registerCommand(
-    'jestRunIt.debugTest',
+    'jestRunItCodeLens.debugTest',
     debugTest
   );
   context.subscriptions.push(debugTestCommand);
+
+  const runTestFromExplorerCommand = vscode.commands.registerCommand(
+    'jestRunItTestsExplorer.runTest',
+    runTestFromExplorer
+  );
+  context.subscriptions.push(runTestFromExplorerCommand);
+
+  const debugTestFromExplorerCommand = vscode.commands.registerCommand(
+    'jestRunItTestsExplorer.debugTest',
+    debugTestFromExplorer
+  );
+  context.subscriptions.push(debugTestFromExplorerCommand);
 
   let patterns = [];
   const testMatchPatternsConfig = getConfig(
@@ -97,28 +123,34 @@ export const activate = (context: vscode.ExtensionContext) => {
 
   const codeLensProviderDisposable = vscode.languages.registerCodeLensProvider(
     patterns,
-    new JestifyedCodeLensProvider()
+    new JestDoItCodeLensProvider()
   );
   context.subscriptions.push(codeLensProviderDisposable);
 };
 
-class JestifyedCodeLensProvider implements vscode.CodeLensProvider {
-  private runCommand = (args: [string, string]): vscode.Command => {
+class JestDoItCodeLensProvider implements vscode.CodeLensProvider {
+  private runCommand = (args: {
+    file: string;
+    name: string;
+  }): vscode.Command => {
     const runLabel = getConfig(ConfigOption.RunTestLabel) as string;
     return {
       command: 'jestRunIt.runTest',
       title: runLabel ? runLabel : '🏃‍♂️',
-      arguments: args,
+      arguments: [args.file, args.name],
       tooltip: 'Run test',
     };
   };
 
-  private debugCommand = (args: [string, string]): vscode.Command => {
+  private debugCommand = (args: {
+    file: string;
+    name: string;
+  }): vscode.Command => {
     const debugLabel = getConfig(ConfigOption.DebugTestLabel) as string;
     return {
       command: 'jestRunIt.debugTest',
       title: debugLabel ? debugLabel : '🐞',
-      arguments: args,
+      arguments: [args.file, args.name],
       tooltip: 'Debug test',
     };
   };
@@ -126,7 +158,10 @@ class JestifyedCodeLensProvider implements vscode.CodeLensProvider {
   private createLensAt(
     startLine: number,
     startCol: number,
-    args: [string, string]
+    args: {
+      file: string;
+      name: string;
+    }
   ) {
     // Range values are 0 based.
     let commentLine = new vscode.Range(
@@ -155,20 +190,20 @@ class JestifyedCodeLensProvider implements vscode.CodeLensProvider {
 
       if (Array.isArray(parsed.describeBlocks)) {
         parsed.describeBlocks.forEach(des => {
-          const lenses = this.createLensAt(des.start.line, des.start.column, [
-            des.file,
-            des.name,
-          ]);
+          const lenses = this.createLensAt(des.start.line, des.start.column, {
+            file: des.file,
+            name: des.name,
+          });
           codeLenses.push(...lenses);
         });
       }
 
       if (Array.isArray(parsed.itBlocks)) {
         parsed.itBlocks.forEach(itb => {
-          const lenses = this.createLensAt(itb.start.line, itb.start.column, [
-            itb.file,
-            itb.name,
-          ]);
+          const lenses = this.createLensAt(itb.start.line, itb.start.column, {
+            file: itb.file,
+            name: itb.name,
+          });
           codeLenses.push(...lenses);
         });
       }

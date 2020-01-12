@@ -4,16 +4,11 @@ import * as micromatch from 'micromatch';
 import { parse } from 'jest-editor-support';
 
 import { getConfig, ConfigOption } from './config';
-
 import { DEFAULT_TEST_FILE_PATTERNS } from './constants';
+import { TestableNode } from './types';
 
-type TestableNode = {
-  name: string;
-  type: 'it' | 'describe' | 'root';
-  children: Array<TestableNode>;
-};
-
-export class TestsExplorerDataProvider implements vscode.TreeDataProvider<Testable> {
+export class TestsExplorerDataProvider
+  implements vscode.TreeDataProvider<Testable> {
   private _onDidChangeTreeData: vscode.EventEmitter<
     Testable | undefined
   > = new vscode.EventEmitter<Testable | undefined>();
@@ -45,7 +40,10 @@ export class TestsExplorerDataProvider implements vscode.TreeDataProvider<Testab
           ? testMatchPatternsConfig
           : DEFAULT_TEST_FILE_PATTERNS;
 
-        const jestRunItTestsExplorerEnabled = micromatch.isMatch(filePath, patterns);
+        const jestRunItTestsExplorerEnabled = micromatch.isMatch(
+          filePath,
+          patterns
+        );
 
         vscode.commands.executeCommand(
           'setContext',
@@ -81,6 +79,7 @@ export class TestsExplorerDataProvider implements vscode.TreeDataProvider<Testab
           element.children.map(child => {
             return new Testable(
               child.name,
+              child.file,
               child.children,
               child.type === 'it'
                 ? vscode.TreeItemCollapsibleState.None
@@ -101,6 +100,7 @@ export class TestsExplorerDataProvider implements vscode.TreeDataProvider<Testab
           children.map(child => {
             return new Testable(
               child.name,
+              child.file,
               child.children,
               vscode.TreeItemCollapsibleState.Collapsed
             );
@@ -116,6 +116,7 @@ export class TestsExplorerDataProvider implements vscode.TreeDataProvider<Testab
 export class Testable extends vscode.TreeItem {
   constructor(
     public readonly label: string,
+    public readonly file: string,
     public readonly children: Array<TestableNode> | undefined,
     public readonly collapsibleState: vscode.TreeItemCollapsibleState,
     public readonly command?: vscode.Command
@@ -130,25 +131,6 @@ export class Testable extends vscode.TreeItem {
   get description(): string {
     return this.label;
   }
-
-  iconPath = {
-    light: path.join(
-      __filename,
-      '..',
-      '..',
-      'resources',
-      'light',
-      'dependency.svg'
-    ),
-    dark: path.join(
-      __filename,
-      '..',
-      '..',
-      'resources',
-      'dark',
-      'dependency.svg'
-    ),
-  };
 
   contextValue = 'testable';
 }
