@@ -1,6 +1,6 @@
 {
-  "name": "jestifyde",
-  "displayName": "jestifyde",
+  "name": "jestRunIt",
+  "displayName": "Jest Run It",
   "description": "Nicer Jest test runner",
   "version": "0.0.1",
   "engines": {
@@ -16,33 +16,33 @@
   "contributes": {
     "configuration": [
       {
-        "title": "Jestifyde Config",
+        "title": "Jest Run It Config",
         "properties": {
-          "jestifyde.jestConfigPath": {
+          "jestRunIt.jestConfigPath": {
             "type": "string",
             "default": "",
             "description": "Jest config file path relative to the current workspace (e.g: ./jest.config.js)",
             "scope": "window"
           },
-          "jestifyde.jestPath": {
+          "jestRunIt.jestPath": {
             "type": "string",
             "default": "node_modules/.bin/jest",
             "description": "Absolute path to the Jest binary (default: node_modules/.bin/jest)",
             "scope": "window"
           },
-          "jestifyde.runTestLabel": {
+          "jestRunIt.runTestLabel": {
             "type": "string",
             "default": "🏃‍♂️",
             "description": "Label for the run test action",
             "scope": "window"
           },
-          "jestifyde.debugTestLabel": {
+          "jestRunIt.debugTestLabel": {
             "type": "string",
             "default": "🐞",
             "description": "Label for the debug test action",
             "scope": "window"
           },
-          "jestifyde.testMatchPatterns": {
+          "jestRunIt.testMatchPatterns": {
             "type": "array",
             "default": [
               "**/*.{spec,test}.{js,ts,jsx,tsx}",
@@ -56,11 +56,11 @@
     ],
     "commands": [
       {
-        "command": "jestifyde.debugTest",
+        "command": "jestRunIt.debugTest",
         "title": "Debug test"
       },
       {
-        "command": "jestifyde.runTest",
+        "command": "jestRunIt.runTest",
         "title": "Run test"
       }
     ]

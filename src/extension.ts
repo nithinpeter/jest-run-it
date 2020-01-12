@@ -9,7 +9,7 @@ enum ConfigOption {
   TestMatchPatterns = 'testMatchPatterns',
 }
 
-type JestifydeConfig = Omit<
+type JestRunItConfig = Omit<
   {
     [key in ConfigOption]: string;
   },
@@ -21,7 +21,7 @@ type JestifydeConfig = Omit<
 const getConfig = (option: ConfigOption) => {
   const config = vscode.workspace
     .getConfiguration()
-    .get<JestifydeConfig>('jestifyde');
+    .get<JestRunItConfig>('jestRunIt');
 
   return config ? config[option] : '';
 };
@@ -39,7 +39,7 @@ const getTerminal = (terminalName: string) => {
 };
 
 const runTest = (filePath: string, testName: string) => {
-  const TERMINAL_NAME = 'Jestifyde';
+  const TERMINAL_NAME = 'JestRunIt';
   const jestPath = getConfig(ConfigOption.JestPath) || DEFAULT_JEST_PATH;
   const jestConfigPath = getConfig(ConfigOption.JestConfigPath);
 
@@ -69,7 +69,7 @@ const debugTest = (filePath: string, testName: string) => {
   const debugConfig: vscode.DebugConfiguration = {
     console: 'integratedTerminal',
     internalConsoleOptions: 'neverOpen',
-    name: 'Jestifyde',
+    name: 'JestRunIt',
     program: '${workspaceFolder}/' + jestPath,
     request: 'launch',
     type: 'node',
@@ -84,13 +84,13 @@ const debugTest = (filePath: string, testName: string) => {
 
 export const activate = (context: vscode.ExtensionContext) => {
   const runTestCommand = vscode.commands.registerCommand(
-    'jestifyde.runTest',
+    'jestRunIt.runTest',
     runTest
   );
   context.subscriptions.push(runTestCommand);
 
   const debugTestCommand = vscode.commands.registerCommand(
-    'jestifyde.debugTest',
+    'jestRunIt.debugTest',
     debugTest
   );
   context.subscriptions.push(debugTestCommand);
@@ -129,7 +129,7 @@ class JestifyedCodeLensProvider implements vscode.CodeLensProvider {
   private runCommand = (args: [string, string]): vscode.Command => {
     const runLabel = getConfig(ConfigOption.RunTestLabel) as string;
     return {
-      command: 'jestifyde.runTest',
+      command: 'jestRunIt.runTest',
       title: runLabel ? runLabel : '🏃‍♂️',
       arguments: args,
       tooltip: 'Run test',
@@ -139,7 +139,7 @@ class JestifyedCodeLensProvider implements vscode.CodeLensProvider {
   private debugCommand = (args: [string, string]): vscode.Command => {
     const debugLabel = getConfig(ConfigOption.DebugTestLabel) as string;
     return {
-      command: 'jestifyde.debugTest',
+      command: 'jestRunIt.debugTest',
       title: debugLabel ? debugLabel : '🐞',
       arguments: args,
       tooltip: 'Debug test',
