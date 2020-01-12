@@ -1,33 +1,9 @@
 import * as vscode from 'vscode';
 import { parse } from 'jest-editor-support';
-import { ExplorerDataProvider } from './explorerDataProvider';
 
-enum ConfigOption {
-  JestPath = 'jestPath',
-  JestConfigPath = 'jestConfigPath',
-  RunTestLabel = 'runTestLabel',
-  DebugTestLabel = 'debugTestLabel',
-  TestMatchPatterns = 'testMatchPatterns',
-}
-
-type JestRunItConfig = Omit<
-  {
-    [key in ConfigOption]: string;
-  },
-  ConfigOption.TestMatchPatterns
-> & {
-  [ConfigOption.TestMatchPatterns]: Array<string>;
-};
-
-const getConfig = (option: ConfigOption) => {
-  const config = vscode.workspace
-    .getConfiguration()
-    .get<JestRunItConfig>('jestRunIt');
-
-  return config ? config[option] : '';
-};
-
-const DEFAULT_JEST_PATH = 'node_modules/.bin/jest';
+import { TestsExplorerDataProvider } from './testsExplorerDataProvider';
+import { DEFAULT_TEST_FILE_PATTERNS, DEFAULT_JEST_PATH } from './constants';
+import { getConfig, ConfigOption } from './config';
 
 const quoteTestName = (testName: string) => {
   // escape double quotes
@@ -84,10 +60,10 @@ const debugTest = (filePath: string, testName: string) => {
 };
 
 export const activate = (context: vscode.ExtensionContext) => {
-  const explorerDataProvider = new ExplorerDataProvider();
+  const testsExplorerDataProvider = new TestsExplorerDataProvider();
   vscode.window.registerTreeDataProvider(
     'jestRunItExplorer',
-    explorerDataProvider
+    testsExplorerDataProvider
   );
 
   const runTestCommand = vscode.commands.registerCommand(
@@ -113,16 +89,10 @@ export const activate = (context: vscode.ExtensionContext) => {
     }));
   } else {
     // Default patterns
-    patterns = [
-      {
-        pattern: '**/*.{test,spec}.{js,jsx,ts,tsx}',
-        scheme: 'file',
-      },
-      {
-        pattern: '**/__tests__/*.{js,jsx,ts,tsx}',
-        scheme: 'file',
-      },
-    ];
+    patterns = DEFAULT_TEST_FILE_PATTERNS.map(tm => ({
+      pattern: tm,
+      scheme: 'file',
+    }));
   }
 
   const codeLensProviderDisposable = vscode.languages.registerCodeLensProvider(

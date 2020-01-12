@@ -1,6 +1,11 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
+import * as micromatch from 'micromatch';
 import { parse } from 'jest-editor-support';
+
+import { getConfig, ConfigOption } from './config';
+
+import { DEFAULT_TEST_FILE_PATTERNS } from './constants';
 
 type TestableNode = {
   name: string;
@@ -8,17 +13,56 @@ type TestableNode = {
   children: Array<TestableNode>;
 };
 
-export class ExplorerDataProvider implements vscode.TreeDataProvider<Testable> {
+export class TestsExplorerDataProvider implements vscode.TreeDataProvider<Testable> {
   private _onDidChangeTreeData: vscode.EventEmitter<
     Testable | undefined
   > = new vscode.EventEmitter<Testable | undefined>();
   readonly onDidChangeTreeData: vscode.Event<Testable | undefined> = this
     ._onDidChangeTreeData.event;
 
-  constructor() {}
+  constructor() {
+    vscode.window.onDidChangeActiveTextEditor(() =>
+      this.onActiveEditorChanged()
+    );
+    // Call the first time
+    this.onActiveEditorChanged();
+  }
 
   refresh(): void {
     this._onDidChangeTreeData.fire();
+  }
+
+  onActiveEditorChanged(): void {
+    const editor = vscode.window.activeTextEditor;
+    if (editor) {
+      if (editor.document.uri.scheme === 'file') {
+        const filePath = editor.document.uri.fsPath;
+        const testMatchPatternsConfig = getConfig(
+          ConfigOption.TestMatchPatterns
+        ) as Array<string>;
+
+        const patterns = Array.isArray(testMatchPatternsConfig)
+          ? testMatchPatternsConfig
+          : DEFAULT_TEST_FILE_PATTERNS;
+
+        const jestRunItExplorerEnabled = micromatch.isMatch(filePath, patterns);
+
+        vscode.commands.executeCommand(
+          'setContext',
+          'jestRunItExplorerEnabled',
+          jestRunItExplorerEnabled
+        );
+        if (jestRunItExplorerEnabled) {
+          this.refresh();
+        }
+      }
+    } else {
+      vscode.commands.executeCommand(
+        'setContext',
+        'jestRunItExplorerEnabled',
+        false
+      );
+    }
   }
 
   getTreeItem(element: Testable): vscode.TreeItem {
@@ -106,5 +150,5 @@ export class Testable extends vscode.TreeItem {
     ),
   };
 
-  contextValue = 'dependency';
+  contextValue = 'testable';
 }

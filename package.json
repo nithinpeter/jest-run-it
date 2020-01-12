@@ -69,7 +69,7 @@
         {
           "id": "jestRunIt",
           "title": "Jest Run It",
-          "icon": "media/dep.svg"
+          "icon": "media/jest-logo.png"
         }
       ]
     },
@@ -77,7 +77,8 @@
       "jestRunIt": [
         {
           "id": "jestRunItExplorer",
-          "name": "Jest Run It Explorer"
+          "name": "Explorer",
+          "when": "jestRunItExplorerEnabled"
         }
       ]
     }
@@ -91,16 +92,18 @@
   },
   "devDependencies": {
     "@types/glob": "^7.1.1",
+    "@types/micromatch": "^4.0.0",
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.11.7",
     "@types/vscode": "^1.40.2",
     "glob": "^7.1.5",
     "mocha": "^6.2.2",
-    "typescript": "^3.6.4",
     "tslint": "^5.20.0",
+    "typescript": "^3.6.4",
     "vscode-test": "^1.2.2"
   },
   "dependencies": {
-    "jest-editor-support": "^27.1.1"
+    "jest-editor-support": "^27.1.1",
+    "micromatch": "^4.0.2"
   }
 }
