@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import * as path from 'path';
 import * as micromatch from 'micromatch';
 import { parse } from 'jest-editor-support';
 
@@ -102,7 +101,9 @@ export class TestsExplorerDataProvider
               child.name,
               child.file,
               child.children,
-              vscode.TreeItemCollapsibleState.Collapsed
+              child.type === 'it'
+                ? vscode.TreeItemCollapsibleState.None
+                : vscode.TreeItemCollapsibleState.Expanded
             );
           })
         );
@@ -126,10 +127,6 @@ export class Testable extends vscode.TreeItem {
 
   get tooltip(): string {
     return `${this.label}`;
-  }
-
-  get description(): string {
-    return this.label;
   }
 
   contextValue = 'testable';
