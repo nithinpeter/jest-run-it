@@ -135,7 +135,7 @@ class JestDoItCodeLensProvider implements vscode.CodeLensProvider {
   }): vscode.Command => {
     const runLabel = getConfig(ConfigOption.RunTestLabel) as string;
     return {
-      command: 'jestRunIt.runTest',
+      command: 'jestRunItCodeLens.runTest',
       title: runLabel ? runLabel : '🏃‍♂️',
       arguments: [args.file, args.name],
       tooltip: 'Run test',
@@ -148,7 +148,7 @@ class JestDoItCodeLensProvider implements vscode.CodeLensProvider {
   }): vscode.Command => {
     const debugLabel = getConfig(ConfigOption.DebugTestLabel) as string;
     return {
-      command: 'jestRunIt.debugTest',
+      command: 'jestRunItCodeLens.debugTest',
       title: debugLabel ? debugLabel : '🐞',
       arguments: [args.file, args.name],
       tooltip: 'Debug test',
