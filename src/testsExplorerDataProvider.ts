@@ -39,24 +39,21 @@ export class TestsExplorerDataProvider
           ? testMatchPatternsConfig
           : DEFAULT_TEST_FILE_PATTERNS;
 
-        const jestRunItTestsExplorerEnabled = micromatch.isMatch(
-          filePath,
-          patterns
-        );
+        const jestRunItActive = micromatch.isMatch(filePath, patterns);
 
         vscode.commands.executeCommand(
           'setContext',
-          'jestRunItTestsExplorerEnabled',
-          jestRunItTestsExplorerEnabled
+          'jestRunItActive',
+          jestRunItActive
         );
-        if (jestRunItTestsExplorerEnabled) {
+        if (jestRunItActive) {
           this.refresh();
         }
       }
     } else {
       vscode.commands.executeCommand(
         'setContext',
-        'jestRunItTestsExplorerEnabled',
+        'jestRunItActive',
         false
       );
     }

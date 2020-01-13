@@ -30,11 +30,24 @@ const debugTestFromExplorer = (testable: Testable) => {
   debugTest(testable.file, testable.label);
 };
 
-const runTest = (filePath: string, testName: string) => {
+const runTestFromEditor = (uri: vscode.Uri) => {
+  const filePath = uri.fsPath;
+  runTest(filePath);
+};
+
+const debugTestFromEditor = (uri: vscode.Uri) => {
+  const filePath = uri.fsPath;
+  debugTest(filePath);
+};
+
+const runTest = (filePath: string, testName?: string) => {
   const jestPath = getConfig(ConfigOption.JestPath) || DEFAULT_JEST_PATH;
   const jestConfigPath = getConfig(ConfigOption.JestConfigPath);
 
-  let command = `${jestPath} ${filePath} -t ${quoteTestName(testName)}`;
+  let command = `${jestPath} ${filePath}`;
+  if (testName) {
+    command += ` -t ${quoteTestName(testName)}`;
+  }
   if (jestConfigPath) {
     command += ` -c ${jestConfigPath}`;
   }
@@ -47,15 +60,20 @@ const runTest = (filePath: string, testName: string) => {
   terminal.sendText(command);
 };
 
-const debugTest = (filePath: string, testName: string) => {
+const debugTest = (filePath: string, testName?: string) => {
   const editor = vscode.window.activeTextEditor;
   const jestPath = getConfig(ConfigOption.JestPath) || DEFAULT_JEST_PATH;
   const jestConfigPath = getConfig(ConfigOption.JestConfigPath);
 
-  const args = [filePath, '-t', quoteTestName(testName), '--runInBand'];
+  const args = [filePath];
+  if (testName) {
+    args.push('-t', quoteTestName(testName));
+  }
   if (jestConfigPath) {
     args.push('-c', jestConfigPath as string);
   }
+
+  args.push('--runInBand');
 
   const debugConfig: vscode.DebugConfiguration = {
     console: 'integratedTerminal',
@@ -103,6 +121,18 @@ export const activate = (context: vscode.ExtensionContext) => {
     debugTestFromExplorer
   );
   context.subscriptions.push(debugTestFromExplorerCommand);
+
+  const runTestFromEditorCommand = vscode.commands.registerCommand(
+    'jestRunItTestsEditor.runTest',
+    runTestFromEditor
+  );
+  context.subscriptions.push(runTestFromEditorCommand);
+
+  const debugTestFromEditorCommand = vscode.commands.registerCommand(
+    'jestRunItTestsEditor.debugTest',
+    debugTestFromEditor
+  );
+  context.subscriptions.push(debugTestFromEditorCommand);
 
   let patterns = [];
   const testMatchPatternsConfig = getConfig(
