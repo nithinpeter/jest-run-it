@@ -1,14 +1,21 @@
 {
   "name": "jestRunIt",
+  "description": "Run/debug Jest tests right from your editor",
+  "publisher": "vespa-dev-works",
   "displayName": "Jest Run It",
-  "description": "Nicer Jest test runner",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "categories": [
+    "Other",
+    "Debuggers"
+  ],
+  "galleryBanner": {
+    "theme": "dark",
+    "color": "#000000"
+  },
+  "icon": "resources/logo.png",
   "engines": {
     "vscode": "^1.40.2"
   },
-  "categories": [
-    "Other"
-  ],
   "activationEvents": [
     "*"
   ],
