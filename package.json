@@ -16,7 +16,7 @@
   "contributes": {
     "configuration": [
       {
-        "title": "Jest Run It Config",
+        "title": "Jest Run It",
         "properties": {
           "jestRunIt.jestConfigPath": {
             "type": "string",
