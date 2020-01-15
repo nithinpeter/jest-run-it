@@ -8,6 +8,16 @@
     "Other",
     "Debuggers"
   ],
+  "repository": {
+    "url": "https://github.com/nithinpeter/jest-run-it",
+    "type": "git"
+  },
+  "keywords": [
+    "jest",
+    "test",
+    "test runner",
+    "unit tests"
+  ],
   "galleryBanner": {
     "theme": "dark",
     "color": "#000000"
