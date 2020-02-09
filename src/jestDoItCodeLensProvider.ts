@@ -54,6 +54,12 @@ export class JestDoItCodeLensProvider implements vscode.CodeLensProvider {
     document: vscode.TextDocument
   ): Promise<vscode.CodeLens[]> {
     const codeLenses: vscode.CodeLens[] = [];
+
+    // Don't provide anything if the file is dirty
+    if (document.isDirty) {
+      return Promise.resolve([]);
+    }
+
     try {
       const filePath = document.uri.fsPath;
       const parsed = parse(filePath);
