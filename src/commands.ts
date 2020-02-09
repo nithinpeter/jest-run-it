@@ -7,7 +7,7 @@ import { quoteTestName, getTerminal } from './extension';
 export const runTest = (filePath: string, testName?: string) => {
   const jestPath = getConfig(ConfigOption.JestPath) || DEFAULT_JEST_PATH;
   const jestConfigPath = getConfig(ConfigOption.JestConfigPath);
-  let command = `${jestPath} ${filePath}`;
+  let command = `${jestPath} ${quoteTestName(filePath)}`;
   if (testName) {
     command += ` -t ${quoteTestName(testName)}`;
   }
