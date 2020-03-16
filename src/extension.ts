@@ -56,6 +56,12 @@ export const activate = (context: vscode.ExtensionContext) => {
   );
   context.subscriptions.push(debugTestCommand);
 
+  const updateSnapshotFromExplorerCommand = vscode.commands.registerCommand(
+    'jestRunItCodeLens.updateSnapshots',
+    (filePath: string, testName?: string) => runTest(filePath, testName, /*updateSnapshots*/true)
+  );
+  context.subscriptions.push(updateSnapshotFromExplorerCommand);
+
   const runTestFromExplorerCommand = vscode.commands.registerCommand(
     'jestRunItTestsExplorer.runTest',
     runTestFromExplorer

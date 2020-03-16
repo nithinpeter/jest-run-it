@@ -5,6 +5,7 @@ export enum ConfigOption {
   JestConfigPath = 'jestConfigPath',
   RunTestLabel = 'runTestLabel',
   DebugTestLabel = 'debugTestLabel',
+  UpdateSnapshotsLabel = 'updateSnapshotsLabel',
   TestMatchPatterns = 'testMatchPatterns',
 }
 

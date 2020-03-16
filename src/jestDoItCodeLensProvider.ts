@@ -28,6 +28,18 @@ export class JestDoItCodeLensProvider implements vscode.CodeLensProvider {
       tooltip: 'Debug test',
     };
   };
+  private updateSnapshotsCommand = (args: {
+    file: string;
+    name: string;
+  }): vscode.Command => {
+    const updateSnapshotsLabel = getConfig(ConfigOption.UpdateSnapshotsLabel) as string;
+    return {
+      command: 'jestRunItCodeLens.updateSnapshots',
+      title: updateSnapshotsLabel ? updateSnapshotsLabel : '👍',
+      arguments: [args.file, args.name],
+      tooltip: 'Update snapshots',
+    };
+  };
   private createLensAt(
     startLine: number,
     startCol: number,
@@ -48,7 +60,11 @@ export class JestDoItCodeLensProvider implements vscode.CodeLensProvider {
       commentLine,
       this.debugCommand(args)
     );
-    return [runCodeLens, debugCodeLens];
+    let updateSnapshotsCodeLens = new vscode.CodeLens(
+      commentLine,
+      this.updateSnapshotsCommand(args)
+    );
+    return [runCodeLens, debugCodeLens, updateSnapshotsCodeLens];
   }
   async provideCodeLenses(
     document: vscode.TextDocument
