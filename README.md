@@ -29,11 +29,12 @@ You no longer have to run your entire test suite for that one test you changed ð
 
 | Option              | Description                                                                                                         |
 | ------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| Jest Config Path    | Jest config file path relative to the current workspace (e.g: ./jest.config.js)                                     |
-| Jest Path           | Absolute path to the Jest binary (default: node_modules/.bin/jest)                                                  |
-| Run Test Label      | Label for the run test action                                                                                       |
-| Debug Test Label    | Label for the debug test action                                          |
-| Update Snapshosts Label    | Label for update snapshots action                                                                                     |
+| Jest Config Path         | Jest config file path relative to the current workspace (e.g: ./jest.config.js)                                     |
+| Jest Path                | Absolute path to the Jest binary (default: node_modules/.bin/jest) |
+| Run Test Label           | Label for the run test action |
+| Debug Test Label         | Label for the debug test action |
+| Update Snapshosts Label  | Label for update snapshots action |
+| Custom Snapshot Matchers | Custom snapshot matchers |
 | Test Match Patterns | Glob patterns to match test files (default: ['**/*.{test,spec}.{js,jsx,ts,tsx}', '**/__tests__/*.{js,jsx,ts,tsx}']) |
 
 ## Features

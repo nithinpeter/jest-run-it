@@ -65,6 +65,12 @@
             "description": "Label for the update snapshots action",
             "scope": "window"
           },
+          "jestRunIt.customSnapshotMatchers": {
+            "type": "array",
+            "default": [],
+            "description": "Custom snapshot matchers",
+            "scope": "window"
+          },
           "jestRunIt.testMatchPatterns": {
             "type": "array",
             "default": [
