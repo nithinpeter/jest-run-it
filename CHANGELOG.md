@@ -8,3 +8,6 @@ All notable changes to the "jestRunIt" extension will be documented in this file
 
 ## 0.1.0
 - Initial release.
+
+## 0.3.0
+- Add support for updating snapshot tests.
