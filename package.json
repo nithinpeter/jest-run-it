@@ -59,6 +59,18 @@
             "description": "Label for the debug test action",
             "scope": "window"
           },
+          "jestRunIt.updateSnapshotsLabel": {
+            "type": "string",
+            "default": "👍",
+            "description": "Label for the update snapshots action",
+            "scope": "window"
+          },
+          "jestRunIt.customSnapshotMatchers": {
+            "type": "array",
+            "default": [],
+            "description": "Custom snapshot matchers",
+            "scope": "window"
+          },
           "jestRunIt.testMatchPatterns": {
             "type": "array",
             "default": [
@@ -79,6 +91,10 @@
       {
         "command": "jestRunItCodeLens.runTest",
         "title": "Run test"
+      },
+      {
+        "command": "jestRunItCodeLens.updateSnapshots",
+        "title": "Update snapshots"
       },
       {
         "command": "jestRunItTestsExplorer.debugTest",

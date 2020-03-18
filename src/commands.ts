@@ -4,7 +4,7 @@ import { DEFAULT_JEST_PATH, TERMINAL_NAME } from './constants';
 import { getConfig, ConfigOption } from './config';
 import { quoteTestName, getTerminal } from './extension';
 
-export const runTest = (filePath: string, testName?: string) => {
+export const runTest = (filePath: string, testName?: string, updateSnapshots = false) => {
   const jestPath = getConfig(ConfigOption.JestPath) || DEFAULT_JEST_PATH;
   const jestConfigPath = getConfig(ConfigOption.JestConfigPath);
   let command = `${jestPath} ${quoteTestName(filePath)}`;
@@ -13,6 +13,9 @@ export const runTest = (filePath: string, testName?: string) => {
   }
   if (jestConfigPath) {
     command += ` -c ${jestConfigPath}`;
+  }
+  if (updateSnapshots) {
+    command += ' -u';
   }
   let terminal = getTerminal(TERMINAL_NAME);
   if (!terminal) {
