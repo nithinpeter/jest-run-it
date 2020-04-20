@@ -43,8 +43,8 @@
           },
           "jestRunIt.jestPath": {
             "type": "string",
-            "default": "node_modules/.bin/jest",
-            "description": "Absolute path to the Jest binary (default: node_modules/.bin/jest)",
+            "default": "",
+            "description": "Absolute path to the Jest binary",
             "scope": "window"
           },
           "jestRunIt.runTestLabel": {

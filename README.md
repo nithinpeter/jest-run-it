@@ -30,7 +30,7 @@ You no longer have to run your entire test suite for that one test you changed ð
 | Option              | Description                                                                                                         |
 | ------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | Jest Config Path         | Jest config file path relative to the current workspace (e.g: ./jest.config.js)                                     |
-| Jest Path                | Absolute path to the Jest binary (default: node_modules/.bin/jest) |
+| Jest Path                | Absolute path to the Jest binary |
 | Run Test Label           | Label for the run test action |
 | Debug Test Label         | Label for the debug test action |
 | Update Snapshosts Label  | Label for update snapshots action |
