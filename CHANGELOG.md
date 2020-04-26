@@ -2,6 +2,11 @@
 
 All notable changes to the "jestRunIt" extension will be documented in this file.
 
+## 0.3.1
+
+- Use cross platform path for jest executable.
+- Add license.
+
 ## 0.3.0
 
 - Add support for updating snapshot tests.
