@@ -4,6 +4,7 @@
   "publisher": "vespa-dev-works",
   "displayName": "Jest Run It",
   "version": "0.3.1",
+  "license": "MIT",
   "categories": [
     "Other",
     "Debuggers"
