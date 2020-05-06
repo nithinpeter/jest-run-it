@@ -80,6 +80,13 @@
             ],
             "description": "Glob patterns to match test files",
             "scope": "window"
+		  },
+          "jestRunIt.argumentQuotesToUse": {
+			"type": "string",
+			"enum": ["none", "auto", "single", "double"],
+            "default": "auto",
+            "description": "Quotes to use when preparing arguments for jest",
+            "scope": "window"
           }
         }
       }

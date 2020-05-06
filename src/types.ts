@@ -4,3 +4,5 @@ export type TestableNode = {
   type: 'it' | 'describe' | 'root';
   children: Array<TestableNode>;
 };
+
+export type ArgumentQuotesMode = 'none' | 'auto' | 'single' | 'double';

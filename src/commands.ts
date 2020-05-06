@@ -2,12 +2,12 @@ import * as vscode from 'vscode';
 
 import { DEFAULT_JEST_PATH, TERMINAL_NAME } from './constants';
 import { getConfig, ConfigOption } from './config';
-import { quoteTestName, getTerminal } from './extension';
+import { quoteTestName, getTerminal, quoteArgument } from './extension';
 
 export const runTest = (filePath: string, testName?: string, updateSnapshots = false) => {
   const jestPath = getConfig(ConfigOption.JestPath) || DEFAULT_JEST_PATH;
   const jestConfigPath = getConfig(ConfigOption.JestConfigPath);
-  let command = `${jestPath} ${quoteTestName(filePath)}`;
+  let command = `${jestPath} ${quoteArgument(filePath)}`;
   if (testName) {
     command += ` -t ${quoteTestName(testName)}`;
   }
@@ -30,7 +30,7 @@ export const debugTest = (filePath: string, testName?: string) => {
   const jestConfigPath = getConfig(ConfigOption.JestConfigPath);
   const args = [filePath];
   if (testName) {
-    args.push('-t', quoteTestName(testName));
+    args.push('-t', quoteArgument(testName));
   }
   if (jestConfigPath) {
     args.push('-c', jestConfigPath as string);
