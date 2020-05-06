@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 
-import { DEFAULT_JEST_PATH, TERMINAL_NAME } from './constants';
+import { DEFAULT_JEST_PATH, DEFAULT_JEST_DEBUG_PATH_WINDOWS, TERMINAL_NAME } from './constants';
 import { getConfig, ConfigOption } from './config';
 import { quoteTestName, getTerminal, quoteArgument } from './extension';
 
@@ -26,7 +26,8 @@ export const runTest = (filePath: string, testName?: string, updateSnapshots = f
 };
 export const debugTest = (filePath: string, testName?: string) => {
   const editor = vscode.window.activeTextEditor;
-  const jestPath = getConfig(ConfigOption.JestPath) || DEFAULT_JEST_PATH;
+  const jestPath = getConfig(ConfigOption.JestPath)
+  	|| (process.platform === 'win32' ? DEFAULT_JEST_DEBUG_PATH_WINDOWS : DEFAULT_JEST_PATH);
   const jestConfigPath = getConfig(ConfigOption.JestConfigPath);
   const args = [filePath];
   if (testName) {
