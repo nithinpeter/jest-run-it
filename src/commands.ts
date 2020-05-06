@@ -30,7 +30,7 @@ export const debugTest = (filePath: string, testName?: string) => {
   const jestConfigPath = getConfig(ConfigOption.JestConfigPath);
   const args = [filePath];
   if (testName) {
-    args.push('-t', quoteArgument(testName));
+    args.push('-t', quoteTestName(testName, 'none'));
   }
   if (jestConfigPath) {
     args.push('-c', jestConfigPath as string);
