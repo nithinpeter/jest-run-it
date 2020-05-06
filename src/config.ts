@@ -8,6 +8,7 @@ export enum ConfigOption {
   UpdateSnapshotsLabel = 'updateSnapshotsLabel',
   TestMatchPatterns = 'testMatchPatterns',
   CustomSnapshotMatchers = 'customSnapshotMatchers',
+  JestCLIOptions = 'jestCLIOptions'
 }
 
 export type JestRunItConfig = Omit<

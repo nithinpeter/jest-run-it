@@ -80,6 +80,16 @@
             ],
             "description": "Glob patterns to match test files",
             "scope": "window"
+          },
+          "jestRunIt.jestCLIOptions": {
+            "type": "array",
+            "default": [],
+            "items": {
+              "type": "string",
+              "description": "CLI Option e.g. --coverage"
+            },
+            "description": "Add CLI Options to the Jest Command e.g. https://jestjs.io/docs/en/cli",
+            "scope": "window"
           }
         }
       }
