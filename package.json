@@ -86,9 +86,10 @@
             "default": [],
             "items": {
               "type": "string",
-              "description": "CLI Option e.g. --coverage"
+              "description": "CLI option (e.g. --coverage)"
             },
-            "description": "Add CLI Options to the Jest Command e.g. https://jestjs.io/docs/en/cli",
+            "description": "Add CLI options to the Jest command (see https://jestjs.io/docs/en/cli).",
+            "scope": "window"
 		      },
           "jestRunIt.argumentQuotesToUse": {
 			      "type": "string",
