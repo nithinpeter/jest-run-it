@@ -3,7 +3,7 @@
   "description": "Run/debug Jest tests right from your editor",
   "publisher": "vespa-dev-works",
   "displayName": "Jest Run It",
-  "version": "0.3.3",
+  "version": "0.4.0",
   "license": "MIT",
   "categories": [
     "Other",
@@ -90,10 +90,15 @@
             },
             "description": "Add CLI options to the Jest command (see https://jestjs.io/docs/en/cli).",
             "scope": "window"
-		      },
+          },
           "jestRunIt.argumentQuotesToUse": {
-			      "type": "string",
-			      "enum": ["none", "auto", "single", "double"],
+            "type": "string",
+            "enum": [
+              "none",
+              "auto",
+              "single",
+              "double"
+            ],
             "default": "auto",
             "description": "Quotes to use when preparing arguments for jest",
             "scope": "window"
