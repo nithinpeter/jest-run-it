@@ -7,7 +7,10 @@ import { quoteTestName, getTerminal, quoteArgument } from './extension';
 export const runTest = (filePath: string, testName?: string, updateSnapshots = false) => {
   const jestPath = getConfig(ConfigOption.JestPath) || DEFAULT_JEST_PATH;
   const jestConfigPath = getConfig(ConfigOption.JestConfigPath);
-  let command = `${jestPath} ${quoteArgument(filePath)}`;
+  const runOptions = getConfig(ConfigOption.JestCLIOptions) as string[];
+
+  let command = `${jestPath} ${quoteTestName(filePath)}`;
+
   if (testName) {
     command += ` -t ${quoteTestName(testName)}`;
   }
@@ -17,6 +20,11 @@ export const runTest = (filePath: string, testName?: string, updateSnapshots = f
   if (updateSnapshots) {
     command += ' -u';
   }
+  if(runOptions) {
+    runOptions.forEach(option => {
+      command += ` ${option}`;
+    });
+}
   let terminal = getTerminal(TERMINAL_NAME);
   if (!terminal) {
     terminal = vscode.window.createTerminal(TERMINAL_NAME);
@@ -29,6 +37,7 @@ export const debugTest = (filePath: string, testName?: string) => {
   const jestPath = getConfig(ConfigOption.JestPath)
   	|| (process.platform === 'win32' ? DEFAULT_JEST_DEBUG_PATH_WINDOWS : DEFAULT_JEST_PATH);
   const jestConfigPath = getConfig(ConfigOption.JestConfigPath);
+  const jestCLIOptions = getConfig(ConfigOption.JestCLIOptions) as string[];
   const args = [filePath];
   if (testName) {
     args.push('-t', quoteTestName(testName, 'none'));
@@ -36,7 +45,12 @@ export const debugTest = (filePath: string, testName?: string) => {
   if (jestConfigPath) {
     args.push('-c', jestConfigPath as string);
   }
-  args.push('--runInBand');
+  if(jestCLIOptions) {
+      jestCLIOptions.forEach(option => {
+        args.push(option);
+      });
+  }
+  args.push('--runInBand'); 
   const debugConfig: vscode.DebugConfiguration = {
     console: 'integratedTerminal',
     internalConsoleOptions: 'neverOpen',

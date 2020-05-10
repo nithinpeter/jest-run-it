@@ -80,10 +80,19 @@
             ],
             "description": "Glob patterns to match test files",
             "scope": "window"
-		  },
+          },
+          "jestRunIt.jestCLIOptions": {
+            "type": "array",
+            "default": [],
+            "items": {
+              "type": "string",
+              "description": "CLI Option e.g. --coverage"
+            },
+            "description": "Add CLI Options to the Jest Command e.g. https://jestjs.io/docs/en/cli",
+		      },
           "jestRunIt.argumentQuotesToUse": {
-			"type": "string",
-			"enum": ["none", "auto", "single", "double"],
+			      "type": "string",
+			      "enum": ["none", "auto", "single", "double"],
             "default": "auto",
             "description": "Quotes to use when preparing arguments for jest",
             "scope": "window"
