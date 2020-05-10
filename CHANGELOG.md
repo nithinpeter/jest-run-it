@@ -2,6 +2,12 @@
 
 All notable changes to the "jestRunIt" extension will be documented in this file.
 
+## 0.4.0
+
+- New config option pass options to the Jest command.
+- Better support for Windows.
+- New config option to specify argument quote type.
+
 ## 0.3.2
 
 - Use cross platform path for jest executable.
