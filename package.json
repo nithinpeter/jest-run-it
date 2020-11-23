@@ -3,7 +3,7 @@
   "description": "Run/debug Jest tests right from your editor",
   "publisher": "vespa-dev-works",
   "displayName": "Jest Run It",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "license": "MIT",
   "categories": [
     "Other",

@@ -2,6 +2,10 @@
 
 All notable changes to the "jestRunIt" extension will be documented in this file.
 
+## 0.5.0
+
+- Fix compatibility with SSH Remote (Issue #7 and Issue #17).
+
 ## 0.4.0
 
 - New config option pass options to the Jest command.
