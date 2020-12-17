@@ -10,6 +10,7 @@ export enum ConfigOption {
   CustomSnapshotMatchers = 'customSnapshotMatchers',
   JestCLIOptions = 'jestCLIOptions',
   ArgumentQuotesToUse = 'argumentQuotesToUse',
+  EnvironmentVariables = 'environmentVariables',
 }
 
 export type JestRunItConfig = Omit<

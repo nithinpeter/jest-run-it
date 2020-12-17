@@ -102,6 +102,12 @@
             "default": "auto",
             "description": "Quotes to use when preparing arguments for jest",
             "scope": "window"
+          },
+          "jestRunIt.environmentVariables": {
+            "type": "string",
+            "default": "",
+            "description": "Environment variables separated by a space (e.g NODE_ENV=prod TEST_SUITE=all)",
+            "scope": "window"
           }
         }
       }

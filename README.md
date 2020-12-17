@@ -61,6 +61,7 @@ You no longer have to run your entire test suite for that one test you changed ð
 | Test Match Patterns | Glob patterns to match test files (default: ['**/*.{test,spec}.{js,jsx,ts,tsx}', '**/__tests__/*.{js,jsx,ts,tsx}']) |
 | Argument Quotes To Use | Quotation marks to use in command-line arguments: 'auto', 'single', 'double' or 'none' |
 | Jest CLI Options | Specify CLI options for the Jest command (e.g --coverage) |
+| Environment variables | Environment variables separated by a space (e.g NODE_ENV=prod TEST_SUITE=all) |
 
 ## Features
 

@@ -2,6 +2,10 @@
 
 All notable changes to the "jestRunIt" extension will be documented in this file.
 
+## 0.6.0
+
+- Add environment variables config option.
+
 ## 0.5.0
 
 - Fix compatibility with SSH Remote (Issue #7 and Issue #17).
