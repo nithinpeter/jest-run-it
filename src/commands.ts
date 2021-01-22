@@ -67,7 +67,7 @@ export const debugTest = (filePath: string, testName?: string) => {
   const environmentVarialbes = getConfig(
     ConfigOption.EnvironmentVariables
   ) as string;
-  const args = [filePath];
+  const args = [quoteTestName(filePath)];
   if (testName) {
     args.push('-t', quoteTestName(testName, 'none'));
   }
