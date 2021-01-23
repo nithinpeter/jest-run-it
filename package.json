@@ -219,11 +219,11 @@
     "glob": "^7.1.5",
     "mocha": "^6.2.2",
     "tslint": "^5.20.0",
-    "typescript": "^3.6.4",
+    "typescript": "^3.8.0",
     "vscode-test": "^1.2.2"
   },
   "dependencies": {
-    "jest-editor-support": "^27.1.1",
+    "jest-editor-support": "^28.1.0",
     "micromatch": "^4.0.2"
   }
 }
