@@ -4,6 +4,8 @@ import {
   Snapshot,
   Location,
   SnapshotMetadata,
+  ParsedNode,
+  ParsedNodeTypes,
 } from 'jest-editor-support';
 import { getConfig, ConfigOption } from './config';
 
@@ -107,6 +109,25 @@ export class JestDoItCodeLensProvider implements vscode.CodeLensProvider {
     return false;
   }
 
+  genCodeLens(codeLenses: vscode.CodeLens[], node: ParsedNode, prefixTestName: string, metadata: SnapshotMetadata[]) {
+    if ([ParsedNodeTypes.describe, ParsedNodeTypes.it].includes(node.type)) {
+      const name = (prefixTestName ? prefixTestName + ' ' : '') + (node as any).name;
+      const lenses = this.createLensAt(
+        node.start.line,
+        node.start.column,
+        {
+          file: node.file,
+          name,
+        },
+        this.hasSnapshots(node, metadata)
+      );
+      codeLenses.push(...lenses);
+
+      node.children?.forEach(child => this.genCodeLens(codeLenses, child, name, metadata))
+    }
+    return codeLenses;
+  }
+
   async provideCodeLenses(
     document: vscode.TextDocument
   ): Promise<vscode.CodeLens[]> {
@@ -127,34 +148,7 @@ export class JestDoItCodeLensProvider implements vscode.CodeLensProvider {
       const snapshot = new Snapshot(undefined, customSnapshotMatchers);
       const metadata = await snapshot.getMetadata(filePath);
 
-      if (Array.isArray(parsed.describeBlocks)) {
-        parsed.describeBlocks.forEach(des => {
-          const lenses = this.createLensAt(
-            des.start.line,
-            des.start.column,
-            {
-              file: des.file,
-              name: des.name,
-            },
-            this.hasSnapshots(des, metadata)
-          );
-          codeLenses.push(...lenses);
-        });
-      }
-      if (Array.isArray(parsed.itBlocks)) {
-        parsed.itBlocks.forEach(itb => {
-          const lenses = this.createLensAt(
-            itb.start.line,
-            itb.start.column,
-            {
-              file: itb.file,
-              name: itb.name,
-            },
-            this.hasSnapshots(itb, metadata)
-          );
-          codeLenses.push(...lenses);
-        });
-      }
+      parsed.root.children?.forEach(child => codeLenses.push(...this.genCodeLens([], child, '', metadata)));
     } catch (e) {
       // Do nothing now
       console.log(e);

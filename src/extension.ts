@@ -44,11 +44,11 @@ export const getTerminal = (terminalName: string) => {
 };
 
 const runTestFromExplorer = (testable: Testable) => {
-  runTest(testable.file, testable.label);
+  runTest(testable.file, testable.testName);
 };
 
 const debugTestFromExplorer = (testable: Testable) => {
-  debugTest(testable.file, testable.label);
+  debugTest(testable.file, testable.testName);
 };
 
 const runTestFromEditor = (uri: vscode.Uri) => {
