@@ -9,15 +9,58 @@ import { getConfig, ConfigOption } from './config';
 import { quoteTestName, getTerminal, quoteArgument } from './extension';
 
 const convertEnvVariablesToObj = (env: string) => {
-  const obj = (env.split(' ') as string[])
-    .filter((v: string) => !!v)
-    .reduce((acc, v) => {
-      const [key, val] = v.split('=');
-      acc[key] = val;
-      return acc;
-    }, {} as { [key: string]: string });
+  const variables: Record<string, string> = {}
 
-  return obj;
+  let varKey = ''
+  let tempStr = ''
+  let inQuote = false
+  for (const char of env) {
+    // if we are in a quote, we need to keep track of the key
+    if (char === '\"') {
+      inQuote = !inQuote
+      continue
+    }
+
+    // set tempStr to varKey when matching a '='
+    if (char === '=') {
+      varKey = tempStr
+      tempStr = ''
+      continue
+    }
+
+    if (char === ' ') {
+      // only keys, like: '--xxx'
+      if (!varKey && tempStr) {
+        variables[tempStr] = ''
+        tempStr = ''
+        continue
+      }
+
+      // handle key=value, like: '--xxx=yyy'
+      if (!inQuote && varKey) {
+        variables[varKey] = variables[varKey] ? `${variables[varKey]} ${tempStr}` : tempStr
+        varKey = ''
+        tempStr = ''
+        continue
+      }
+
+      // if tempStr is empty, do not keep space
+      if (!tempStr) {
+        continue
+      }
+    }
+
+    tempStr += char
+  }
+
+  // fallback characters
+  if (!varKey) {
+    variables[tempStr] = ''
+  } else {
+    variables[varKey] = variables[varKey] ? `${variables[varKey]} ${tempStr}` : tempStr
+  }
+
+  return variables;
 };
 
 export const runTest = (
@@ -64,7 +107,7 @@ export const debugTest = (filePath: string, testName?: string) => {
       : DEFAULT_JEST_PATH);
   const jestConfigPath = getConfig(ConfigOption.JestConfigPath);
   const jestCLIOptions = getConfig(ConfigOption.JestCLIOptions) as string[];
-  const environmentVarialbes = getConfig(
+  const environmentVariables = getConfig(
     ConfigOption.EnvironmentVariables
   ) as string;
   const args = [filePath];
@@ -88,7 +131,7 @@ export const debugTest = (filePath: string, testName?: string) => {
     request: 'launch',
     type: 'node',
     args,
-    env: convertEnvVariablesToObj(environmentVarialbes),
+    env: convertEnvVariablesToObj(environmentVariables),
   };
   vscode.debug.startDebugging(
     vscode.workspace.getWorkspaceFolder(editor!.document.uri),
