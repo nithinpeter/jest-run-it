@@ -74,6 +74,7 @@ export class TestsExplorerDataProvider
         return Promise.resolve(
           element.children.map(child => {
             return new Testable(
+              element.testName + ' ' + child.name,
               child.name,
               child.file,
               child.children,
@@ -96,6 +97,7 @@ export class TestsExplorerDataProvider
           children.map(child => {
             return new Testable(
               child.name,
+              child.name,
               child.file,
               child.children,
               child.type === 'it'
@@ -113,6 +115,7 @@ export class TestsExplorerDataProvider
 
 export class Testable extends vscode.TreeItem {
   constructor(
+    public readonly testName: string,
     public readonly label: string,
     public readonly file: string,
     public readonly children: Array<TestableNode> | undefined,
@@ -122,9 +125,6 @@ export class Testable extends vscode.TreeItem {
     super(label, collapsibleState);
   }
 
-  get tooltip(): string {
-    return `${this.label}`;
-  }
-
+  tooltip = this.testName;
   contextValue = 'testable';
 }

@@ -3,7 +3,7 @@
   "description": "Run/debug Jest tests right from your editor",
   "publisher": "vespa-dev-works",
   "displayName": "Jest Run It",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "license": "MIT",
   "categories": [
     "Other",
@@ -28,7 +28,8 @@
     "vscode": "^1.40.2"
   },
   "activationEvents": [
-    "*"
+    "onLanguage:typescript",
+    "onStartupFinished"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -206,6 +207,7 @@
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
+    "pack": "vsce package --no-yarn",
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile",
     "test": "node ./out/test/runTest.js"

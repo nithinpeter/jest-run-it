@@ -76,3 +76,10 @@ You no longer have to run your entire test suite for that one test you changed ð
 #### 3. Editor title actions to run/debug tests:
 
 ![](https://github.com/nithinpeter/jestifyde/blob/master/readme-resources/jest-run-it-editor-title.png?raw=true)
+
+## Build
+
+```
+yarn install
+yarn run pack
+```
